@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodawanie</title>
+    <link rel="stylesheet" href="/stylesheets/dodawanie.css">
+</head>
+<body>
+    <select name="siedziba" id="siedziba">
+        <option value="0" disabled selected>Wybierz siedzibę</option>
+        <option value="1">Szkoła 1</option>
+        <option value="2">Szkoła 2</option>
+    </select>
+    <div id="table">
+        <table id="tablica-dzieci">
+            <thead>
+            <tr>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Wiek</th>
+                <th>Waga</th>
+                <th>Pas</th> <!-- to może -->
+                <th>Belka</th> <!-- się zmienić -->
+            </tr>
+            </thead>
+            <tr id="original">
+                <td><input type="text" name="imie"></td>
+                <td><input type="text" name="nazwisko"></td>
+                <td><input type="number" name="wiek"></td>
+                <td><input type="number" name="waga"></td>
+                <td><select name="pas" id="pas-form" >
+                    <option selected="selected">Wybierz pas</option>
+                    <option value="bialy">biały</option>
+                    <option value="zolty">żółty</option>
+                    <option value="pomaranczowy">pomarańczowy</option>
+                    <option value="zielony">zielony</option>
+                </select></td>
+                <td><select name="belka" id="belki-form"></select></td>
+            </tr>
+        </table>
+        <button id="dodaj-button">+</button>
+    </div>
+
+
+
+    <script src="javascripts/dodawanie.js"></script>
+</body>
+</html>

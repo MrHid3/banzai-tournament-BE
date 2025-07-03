@@ -1,0 +1,16 @@
+option[disabled] {
+    display: none;
+}
+
+option {
+    color: black;
+}
+
+table, tr, td{
+    border: 2px solid black;
+}
+
+div#table{
+    display: flex;
+    flex-direction: row;
+}
