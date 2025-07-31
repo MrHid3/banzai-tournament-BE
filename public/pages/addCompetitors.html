@@ -6,27 +6,29 @@
     <link rel="stylesheet" href="/stylesheets/addCompetitors.css">
 </head>
 <body>
-    <select name="location" id="location">
-        <option value="0" disabled selected>Wybierz siedzibę</option>
-        <option value="1">Szkoła 1</option> <!-- TODO: request locations from server-->
-        <option value="2">Szkoła 2</option>
-    </select>
-    <div id="table">
-        <table id="competitor-table">
-            <thead>
-            <tr>
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>Wiek</th>
-                <th>Waga</th>
-                <th>Pas</th> <!-- to może -->
-                <th>Belka</th> <!-- się zmienić -->
-            </tr>
-            </thead>
-        </table>
-        <button id="add-button" onclick="addCompetitor()">+</button>
+    <div id="container">
+        <div id="top-bar">
+            <select name="location" id="location-select">
+                <option value="0" disabled selected>Wybierz lokalizację</option>
+            </select>
+            <button id="send-button">WYŚLIJ</button>
+        </div>
+        <div id="competitors-container">
+            <table id="competitors-table">
+                <thead>
+                <tr>
+                    <th>Imię</th>
+                    <th>Nazwisko</th>
+                    <th>Wiek</th>
+                    <th>Waga</th>
+                    <th>Pas</th> <!-- to może -->
+                    <th>Belka</th> <!-- się zmienić -->
+                </tr>
+                </thead>
+            </table>
+            <button id="add-competitor-button">+</button>
+        </div>
     </div>
-
-    <script src="../scripts/addCompetitors.js"></script>
+    <script src="../scripts/addCompetitors.js" type="module"></script>
 </body>
 </html>

@@ -1,35 +1,17 @@
-//lista belek dla każdego pasu jako emotki
-//to bolało
-const stripes = {
-    white: [
-        "⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜",
-        "🟨⬜⬜⬜⬜⬜⬜⬜⬜⬜",
-        "🟨🟨⬜⬜⬜⬜⬜⬜⬜⬜",
-        "🟨🟨🟨⬜⬜⬜⬜⬜⬜⬜",
-        "🟨🟨🟨🟥⬜⬜⬜⬜⬜⬜",
-        "🟨🟨🟨🟥🟥⬜⬜⬜⬜⬜",
-        "🟨🟨🟨🟥🟥🟥⬜⬜⬜⬜",
-        "🟨🟨🟨🟥🟥🟥⬛⬜⬜⬜",
-        "🟨🟨🟨🟥🟥🟥⬛⬛⬜⬜",
-        "🟨🟨🟨🟥🟥🟥⬛⬛⬛⬜",
-        "🟨🟨🟨🟨🟨⬜⬜⬜⬜⬜",
-    ],
-    yellow: [
-        "🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨",
-        "🟥🟨🟨🟨🟨🟨🟨🟨🟨🟨",
-        "🟥🟥🟨🟨🟨🟨🟨🟨🟨🟨",
-        "🟥🟥🟥🟨🟨🟨🟨🟨🟨🟨",
-        "🟥🟥🟥🟥🟨🟨🟨🟨🟨🟨",
-        "🟧🟧🟧🟧🟧🟨🟨🟨🟨🟨",
-    ],
-    orange: [
-        "🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧",
-        "🟧🟧🟧🟧🟧🟩🟩🟩🟩🟩"
-    ],
-    green: [
-        "🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩"
-    ]
+async function getResource(resourceName) {
+    const request = await fetch(resourceName);
+    return await request.json();
 }
+const stripes = await getResource('/resources/stripes.json');
+const locations = await getResource('/resources/locations.json');
+
+const locationSelect = document.querySelector('#location-select');
+locations.forEach(location => {
+    const option = document.createElement("option");
+    option.value = location.value;
+    option.text = location.name;
+    locationSelect.appendChild(option);
+})
 
 //scheme
 // <tr class="competitor-0">
@@ -48,10 +30,11 @@ const stripes = {
 let competitorNumber = 0;
 function addCompetitor() {
     competitorNumber++;
-    const inputs = [['text', 'imie'], ['text', 'nazwisko'], ['number', 'wiek'], ['number', 'waga']]
-    const competitorTable = document.querySelector("#competitor-table");
+    const inputs = [['text', 'name'], ['text', 'surname'], ['number', 'age'], ['number', 'weight']]
+    const competitorTable = document.querySelector("#competitors-table");
     const tr = document.createElement("tr");
     tr.classList.add(`competitor-${competitorNumber}`);
+    tr.classList.add("competitor");
     for (let i = 0; i < inputs.length; i++) {
         const td = document.createElement("td");
         const input = document.createElement("input");
@@ -60,7 +43,7 @@ function addCompetitor() {
         td.appendChild(input);
         tr.appendChild(td);
     }
-    const belts = [['white', 'biały'], ['yellow', 'żółty'], ['orange', 'pomaranczowy'], ['green', 'zielony']];
+    const belts = [['white', 'biały'], ['yellow', 'żółty'], ['orange', 'pomarańczowy'], ['green', 'zielony']];
     let beltTd = document.createElement("td");
     let beltSelect = document.createElement("select");
     beltSelect.name = "belt";
@@ -70,7 +53,7 @@ function addCompetitor() {
         option.text = belts[i][1];
         beltSelect.appendChild(option);
         beltSelect.classList.add(`belt-${competitorNumber}`)
-        beltSelect.oninput = () => showStripes(competitorNumber);
+        beltSelect.oninput = showStripes;
     }
     beltTd.appendChild(beltSelect);
     tr.appendChild(beltTd);
@@ -80,14 +63,20 @@ function addCompetitor() {
     stripeSelect.classList.add(`stripe-${competitorNumber}`);
     stripeTd.appendChild(stripeSelect);
     tr.appendChild(stripeTd);
+    const deleteButtonTd = document.createElement("td");
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("delete-button")
+    deleteButton.innerHTML = "&#88;";
+    deleteButton.onclick = deleteCompetitor;
+    deleteButtonTd.appendChild(deleteButton);
+    tr.appendChild(deleteButtonTd);
     competitorTable.appendChild(tr);
-    showStripes(competitorNumber);
+    showStripes({target: beltSelect})
 }
 
-function showStripes(competitorNumber){
-    const stripeForm = document.querySelector(`.stripe-${competitorNumber}`);
-    const beltForm = document.querySelector(`.belt-${competitorNumber}`);
-    console.log(stripeForm, `.stripe-${competitorNumber}`);
+function showStripes(e){
+    const stripeForm = e.target.parentElement.parentElement.children[5].children[0];
+    const beltForm = e.target;
     while (stripeForm.length > 0)
          stripeForm.removeChild(stripeForm.firstChild);
      stripes[beltForm.value].forEach((e, i) => {
@@ -98,4 +87,56 @@ function showStripes(competitorNumber){
      })
 }
 
+function deleteCompetitor(e){
+    e.target.parentElement.parentElement.remove();
+    competitorNumber--;
+}
+
 addCompetitor();
+const addCompetitorButton = document.querySelector("#add-competitor-button");
+addCompetitorButton.addEventListener("click", addCompetitor);
+
+function send(){
+    if(confirm("Na pewno?")){
+        let competitors = [];
+        const categories = ["name", "surname", "age", "weight"];
+        for(let i = 0; i < competitorNumber; i++){
+            competitors.push([]);
+        }
+        categories.forEach(category => {
+            const inputs = document.querySelectorAll(`input[name="${category}"]`);
+            inputs.forEach((input, j) => {
+                competitors[j].push(input.value);
+            })
+        })
+        const beltSelects = document.querySelectorAll("select[name=belt]");
+        beltSelects.forEach((input, index) => {
+            competitors[index].push(input.value);
+        })
+        const stripeSelects = document.querySelectorAll("select[name=stripe]");
+        stripeSelects.forEach((input, index) => {
+            competitors[index].push(input.value);
+        })
+        competitors.forEach((competitor, index) => {
+            for(let i = 5; i >= 0; i--){
+                if(competitor[i] == ""){
+                    competitors.splice(index, 1);
+                    break;
+                }
+            }
+        });
+        console.log(competitors);
+        fetch("/addCompetitors", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                school: locationSelect.value,
+                competitors: competitors
+            })
+        })
+    }
+}
+const sendButton = document.querySelector("#send-button");
+sendButton.addEventListener("click", send);
