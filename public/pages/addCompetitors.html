@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodawanie</title>
+    <link rel="stylesheet" href="/stylesheets/addCompetitors.css">
+</head>
+<body>
+    <div id="container">
+        <div id="top-bar">
+            <select name="location" id="location-select">
+                <option value="0" disabled selected>Wybierz lokalizację</option>
+            </select>
+            <button id="send-button">WYŚLIJ</button>
+        </div>
+        <div id="competitors-container">
+            <table id="competitors-table">
+                <thead>
+                <tr>
+                    <th>Imię</th>
+                    <th>Nazwisko</th>
+                    <th>Wiek</th>
+                    <th>Waga</th>
+                    <th>Pas</th> <!-- to może -->
+                    <th>Belka</th> <!-- się zmienić -->
+                </tr>
+                </thead>
+            </table>
+            <button id="add-competitor-button">+</button>
+        </div>
+    </div>
+    <script src="../scripts/addCompetitors.js" type="module"></script>
+</body>
+</html>
