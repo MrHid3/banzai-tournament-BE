@@ -125,6 +125,7 @@ input{
     height: 30px;
     background-color: var(--bg-action);
     text-align: center;
+    font-weight: bold;
 }
 
 select {
@@ -143,6 +144,14 @@ option{
 
 option[disabled] {
     display: none;
+}
+
+.error > * > * {
+    background-color: rgb(255, 178, 15);
+    color: var(--highlight);
+    /*border-top: 1px solid var(--text-active);*/
+    /*border-bottom: 1px solid var(--text-active);*/
+    /*margin: 2px;*/
 }
 
 @media only screen and (max-width: 1100px) {

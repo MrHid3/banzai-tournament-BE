@@ -2,10 +2,13 @@ async function getResource(resourceName) {
     const request = await fetch(resourceName);
     return await request.json();
 }
-const stripes = await getResource('/resources/stripes.json');
+const belts = await getResource('/resources/belts.json');
 const locations = await getResource('/resources/locations.json');
 
 const locationSelect = document.querySelector('#location-select');
+const competitorsTable = document.querySelector("#competitors-table");
+const sendButton = document.querySelector("#send-button");
+const addCompetitorButton = document.querySelector("#add-competitor-button");
 locations.forEach(location => {
     const option = document.createElement("option");
     option.value = location.value;
@@ -13,25 +16,10 @@ locations.forEach(location => {
     locationSelect.appendChild(option);
 })
 
-//scheme
-// <tr class="competitor-0">
-// <td><input type="text" name="name"></td>
-// <td><input type="text" name="surname"></td>
-// <td><input type="number" name="age"></td>
-// <td><input type="number" name="weight"></td>
-// <td><select name="belt" onInput=showStripes(0)>
-//     <option value="white">biały</option>
-//     <option value="yellow">żółty</option>
-//     <option value="orange">pomarańczowy</option>
-//     <option value="green">zielony</option>
-// </select></td>
-// <td><select name="stripe" class="stripe-0"></select></td>
-// </tr>
 let competitorNumber = 0;
 function addCompetitor() {
     competitorNumber++;
-    const inputs = [['text', 'name'], ['text', 'surname'], ['number', 'age'], ['number', 'weight']]
-    const competitorTable = document.querySelector("#competitors-table");
+    const inputs = [['text', 'name'], ['text', 'surname'], ['number', 'age'], ['number', 'weight']];
     const tr = document.createElement("tr");
     tr.classList.add(`competitor-${competitorNumber}`);
     tr.classList.add("competitor");
@@ -43,14 +31,13 @@ function addCompetitor() {
         td.appendChild(input);
         tr.appendChild(td);
     }
-    const belts = [['white', 'biały'], ['yellow', 'żółty'], ['orange', 'pomarańczowy'], ['green', 'zielony']];
     let beltTd = document.createElement("td");
     let beltSelect = document.createElement("select");
     beltSelect.name = "belt";
     for (let i = 0; i < belts.length; i++) {
         const option = document.createElement("option");
-        option.value = belts[i][0];
-        option.text = belts[i][1];
+        option.value = i;
+        option.text = belts[i].polish;
         beltSelect.appendChild(option);
         beltSelect.classList.add(`belt-${competitorNumber}`)
         beltSelect.oninput = showStripes;
@@ -70,7 +57,7 @@ function addCompetitor() {
     deleteButton.onclick = deleteCompetitor;
     deleteButtonTd.appendChild(deleteButton);
     tr.appendChild(deleteButtonTd);
-    competitorTable.appendChild(tr);
+    competitorsTable.appendChild(tr);
     showStripes({target: beltSelect})
 }
 
@@ -79,7 +66,7 @@ function showStripes(e){
     const beltForm = e.target;
     while (stripeForm.length > 0)
          stripeForm.removeChild(stripeForm.firstChild);
-     stripes[beltForm.value].forEach((e, i) => {
+     belts[beltForm.value].stripes.forEach((e, i) => {
          const option = document.createElement("option");
          option.value = i;
          option.text = e;
@@ -93,10 +80,13 @@ function deleteCompetitor(e){
 }
 
 addCompetitor();
-const addCompetitorButton = document.querySelector("#add-competitor-button");
 addCompetitorButton.addEventListener("click", addCompetitor);
 
-function send(){
+async function send(){
+    if(locationSelect.value == 0){
+        alert("Wybierz lokalizację");
+        return;
+    }
     if(confirm("Na pewno?")){
         let competitors = [];
         const categories = ["name", "surname", "age", "weight"];
@@ -117,25 +107,41 @@ function send(){
         stripeSelects.forEach((input, index) => {
             competitors[index].push(input.value);
         })
-        competitors = competitors.filter(competitor => {
+        let wrong = [];
+        competitors = competitors.filter((competitor, index) => {
+            let keep = true;
             competitor.forEach(el => {
                 if (el == ""){
-                    return false;
+                    keep = false;
                 }
             })
-            return true;
+            if(!keep){
+                wrong.push(index)
+            }
+            return keep;
         })
-        fetch("/addCompetitors", {
+        const errors = document.querySelectorAll("#competitors-table .error");
+        errors.forEach(el => {
+            el.classList.remove("error")
+        })
+        wrong.forEach(el => {
+            competitorsTable.children[el + 1].classList.add("error");
+        })
+        const res = await fetch("/addCompetitors", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                school: locationSelect.value,
+                location: locationSelect.value,
                 competitors: competitors
             })
         })
+        if(res.error){
+            res.wrong.forEach(el => {
+                competitorsTable.children[el + 1].classList.add("error");
+            })
+        }
     }
 }
-const sendButton = document.querySelector("#send-button");
 sendButton.addEventListener("click", send);
