@@ -117,15 +117,14 @@ function send(){
         stripeSelects.forEach((input, index) => {
             competitors[index].push(input.value);
         })
-        competitors.forEach((competitor, index) => {
-            for(let i = 5; i >= 0; i--){
-                if(competitor[i] == ""){
-                    competitors.splice(index, 1);
-                    break;
+        competitors = competitors.filter(competitor => {
+            competitor.forEach(el => {
+                if (el == ""){
+                    return false;
                 }
-            }
-        });
-        console.log(competitors);
+            })
+            return true;
+        })
         fetch("/addCompetitors", {
             method: "POST",
             headers: {
