@@ -2,6 +2,7 @@ async function getResource(resourceName) {
     const request = await fetch(resourceName);
     return await request.json();
 }
+
 const belts = await getResource('/resources/belts.json');
 const locations = await getResource('/resources/locations.json');
 

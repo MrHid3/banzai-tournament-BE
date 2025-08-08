@@ -35,6 +35,10 @@ app.get('/dodawanie', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/pages/addCompetitors.html'));
 })
 
+app.get("/zawodnicy", (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/pages/displayCompetitors.html'));
+})
+
 app.post('/addCompetitors', async (req, res) => {
     let wrong = [];
     req.body.competitors.forEach(async (competitor, index) => {
@@ -55,6 +59,12 @@ app.post('/addCompetitors', async (req, res) => {
         error: false,
         wrong: null
     })
+})
+
+app.get("/getCompetitors", async (req, res) => {
+    const competitors = await pool.query("SELECT * FROM competitors");
+    console.log(competitors);
+    res.send(competitors.rows);
 })
 
 app.listen(4000, () => {

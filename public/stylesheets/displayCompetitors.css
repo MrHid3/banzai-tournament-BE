@@ -1,0 +1,14 @@
+@import url('colors.css');
+@import url('all.css');
+
+body{
+    background-color: var(--bg-primary);
+}
+
+#app{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+}
+
