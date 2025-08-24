@@ -50,6 +50,11 @@ app.post('/addCompetitors', async (req, res) => {
     })
 })
 
+app.get('/getCompetitors', async (req, res) => {
+    const getCompetitorsQuery = await pool.query("SELECT name, surname, age, weight, belt, stripe, location FROM competitors");
+    res.send(getCompetitorsQuery.rows);
+})
+
 app.listen(3000, () => {
     console.log('server running on localhost:3000')
 });
