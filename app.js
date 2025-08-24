@@ -1,14 +1,15 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
 import pool from './server_scripts/db.js';
+import cors from 'cors';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -26,14 +27,6 @@ async function initDB(){
 }
 
 initDB();
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/pages/index.html'));
-})
-
-app.get('/dodawanie', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/pages/addCompetitors.html'));
-})
 
 app.post('/addCompetitors', async (req, res) => {
     let wrong = [];
@@ -57,6 +50,6 @@ app.post('/addCompetitors', async (req, res) => {
     })
 })
 
-app.listen(4000, () => {
-    console.log('http://localhost:4000')
+app.listen(3000, () => {
+    console.log('server running on localhost:3000')
 });
