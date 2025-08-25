@@ -44,7 +44,7 @@ app.get('/dodawanie', (req, res) => {
 
 app.post('/addCompetitors', async (req, res) => {
     let wrong = [];
-    console.log(req.body)
+    console.log(req.body);
     req.body.competitors.forEach(async (competitor, index) => {
         if(competitor[0] != "" && competitor[1] != "" && competitor[2] != "" && competitor[3] != "" && req.body.location != null){
             await pool.query("INSERT INTO competitors (name, surname, age, weight, level, location) values ($1, $2, $3, $4, $5, $6)",
