@@ -20,8 +20,7 @@ async function initDB(){
         "surname varchar," +
         "age integer," +
         "weight integer," +
-        "belt integer," +
-        "stripe integer," +
+        "level integer," +
         "location varchar)")
 }
 
@@ -37,10 +36,11 @@ app.get('/dodawanie', (req, res) => {
 
 app.post('/addCompetitors', async (req, res) => {
     let wrong = [];
+    console.log(req.body)
     req.body.competitors.forEach(async (competitor, index) => {
         if(competitor[0] != "" && competitor[1] != "" && competitor[2] != "" && competitor[3] != "" && req.body.location != null){
-            await pool.query("INSERT INTO competitors (name, surname, age, weight, belt, stripe, location) values ($1, $2, $3, $4, $5, $6, $7)",
-                [competitor[0], competitor[1], competitor[2], competitor[3], competitor[4], competitor[5], req.body.location])
+            await pool.query("INSERT INTO competitors (name, surname, age, weight, level, location) values ($1, $2, $3, $4, $5, $6)",
+                [competitor.name, competitor.surname, competitor.age, competitor.weight, competitor.level, competitor[5], req.body.location])
         }else{
             wrong.push(index)
         }
