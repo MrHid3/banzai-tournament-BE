@@ -62,7 +62,7 @@ app.get('/getCompetitors', async (req, res) => {
     res.send(getCompetitorsQuery.rows);
 })
 
-app.get("/getCompetitors/:school", async (req, res) => {
+app.get("/getCompetitors/school/:school", async (req, res) => {
     const getCompetitorsQuery = await pool.query("SELECT id, name, surname, age, weight, level, location FROM competitors WHERE location=$1", [req.params.school]);
     res.send(getCompetitorsQuery.rows);
 })
