@@ -12,7 +12,7 @@ const app = express();
 
 const corsOptions ={
     origin:'*',
-    credentials:true,            //access-control-allow-credentials:true
+    credentials:true,
     optionSuccessStatus:200,
 }
 
@@ -33,14 +33,6 @@ async function initDB(){
 }
 
 initDB();
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/pages/index.html'));
-})
-
-app.get('/dodawanie', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/pages/addCompetitors.html'));
-})
 
 app.post('/addCompetitors', async (req, res) => {
     let wrong = [];
@@ -66,7 +58,12 @@ app.post('/addCompetitors', async (req, res) => {
 })
 
 app.get('/getCompetitors', async (req, res) => {
-    const getCompetitorsQuery = await pool.query("SELECT name, surname, age, weight, level, location FROM competitors");
+    const getCompetitorsQuery = await pool.query("SELECT id, name, surname, age, weight, level, location FROM competitors");
+    res.send(getCompetitorsQuery.rows);
+})
+
+app.get("/getCompetitors/:school", async (req, res) => {
+    const getCompetitorsQuery = await pool.query("SELECT id, name, surname, age, weight, level, location FROM competitors WHERE location=$1", [req.params.school]);
     res.send(getCompetitorsQuery.rows);
 })
 
